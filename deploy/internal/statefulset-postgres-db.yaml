@@ -25,6 +25,7 @@ spec:
       #-----------------#
       - name: initialize-database
         image: NOOBAA_DB_IMAGE
+        imagePullPolicy: "IfNotPresent"
         env:
           - name: POSTGRESQL_DATABASE
             value: nbcore
@@ -119,4 +120,4 @@ spec:
           - ReadWriteOnce
         resources:
           requests:
-            storage: 50Gi
+            storage: 10Gi

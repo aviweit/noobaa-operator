@@ -151,3 +151,39 @@ INFO[0000] operator-image: noobaa/noobaa-operator:5.14.0
 - Build the project: `make`
 - Test with the alias `nb` that runs the local operator from `build/_output/bin` (alias created by devenv)
 - Install the operator and create the system with: `nb install`
+
+# Additional comments
+
+Below are additional comments on customizing this fork and installing noobaa on a kubeadm cluster. Ensure to use a locally built operator
+
+## Provide proper access to DB PV
+
+NOTE: temp workaround
+
+Invoke the below on all worker nodes you have
+
+```
+sudo chmod uog+rwx /mnt
+sudo chmod uog+rwx /mnt/data
+```
+
+## PVC customizations
+
+DB yaml files had been modified with reduced size of PVC (10 Gi)
+
+## Local storage class and PV
+
+Run the below to create default storage class and PV for the PVCs to bound to
+
+`kubectl apply -f ./local-storage-class.yaml`
+
+Note: you may need to re-apply above yaml between restarts
+
+## Private registry
+
+It is advised to use private registry to refrain from docker pull rate limit. Push operator and db images and customize the following
+
+* --db-image
+* --operator-image
+
+`build/_output/bin/noobaa-operator-local install --operator-image='10.31.3.13:5000/noobaa/noobaa-operator:5.14.0' --db-image='10.31.3.13:5000/centos/postgresql-12-centos7'`

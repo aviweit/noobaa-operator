@@ -37,6 +37,7 @@ spec:
       containers:
         - name: noobaa-operator
           image: NOOBAA_OPERATOR_IMAGE
+          imagePullPolicy: "Always"
           volumeMounts:
           - mountPath: /etc/pki/ca-trust/extracted/pem
             name: noobaa-ca-inject

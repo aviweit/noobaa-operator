@@ -12,11 +12,11 @@ TIME ?= time -p
 ARCH ?= $(shell uname -m)
 
 VERSION ?= $(shell go run cmd/version/main.go)
-IMAGE ?= noobaa/noobaa-operator:$(VERSION)
-DEV_IMAGE ?= noobaa/noobaa-operator-dev:$(VERSION)
+IMAGE ?= 10.31.3.13:5000/noobaa/noobaa-operator:$(VERSION)
+DEV_IMAGE ?= 10.31.3.13:5000/noobaa/noobaa-operator-dev:$(VERSION)
 REPO ?= github.com/noobaa/noobaa-operator
-CATALOG_IMAGE ?= noobaa/noobaa-operator-catalog:$(VERSION)
-BUNDLE_IMAGE ?= noobaa/noobaa-operator-bundle:$(VERSION)
+CATALOG_IMAGE ?= 10.31.3.13:5000/noobaa/noobaa-operator-catalog:$(VERSION)
+BUNDLE_IMAGE ?= 10.31.3.13:5000/noobaa/noobaa-operator-bundle:$(VERSION)
 # Get the currently used golang install path (in GOPATH/bin, unless GOBIN is set)
 ifeq (,$(shell go env GOBIN))
 GOBIN=$(shell go env GOPATH)/bin
