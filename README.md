@@ -177,10 +177,26 @@ Run the below to create default storage class and PV for the PVCs to bound to
 
 `kubectl apply -f ./local-storage-class.yaml`
 
-**Note:** you may need to re-apply (delete, apply) above yaml on every noobaa restart
+**Note:** on every noobaa restart - you may need to re-apply (delete, apply) above yaml as well as running `sudo rm -Rf  /mnt/data/*` on every worker node
 
 ## Private registry
 
 It is advised to use a private registry to avoid docker pull rate limit issues. Push operator image and db image and run install command in a similar manner as below:
 
 `build/_output/bin/noobaa-operator-local install --operator-image='10.31.3.13:5000/noobaa/noobaa-operator:5.14.0' --db-image='10.31.3.13:5000/centos/postgresql-12-centos7'`
+
+## Install using noobaa-operator
+
+```
+build/_output/bin/noobaa-operator-local install --operator-image='10.31.3.13:5000/noobaa/noobaa-operator:5.14.0' --db-image='10.31.3.13:5000/centos/postgresql-12-centos7'
+```
+
+## Add out MinIO backing store
+
+Replace access and secert keys with the ones obtained form MinIO
+
+```
+build/_output/bin/noobaa-operator-local backingstore create s3-compatible minio-store --access-key='****'  --secret-key='****' --target-bucket='noobaa-bucket'  --endpoint='http://10.100.200.177:9000'
+```
+
+**Note:** Bucket "noobaa-bucket" should exist already
