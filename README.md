@@ -236,3 +236,15 @@ inoke your aws s3 commands e.g.,
 ```
 aws s3 mb s3://bucket-from-noobaa   --endpoint https://127.0.0.1:10443 --no-verify-ssl
 ```
+
+```
+aws s3 cp ~/alluxio-2.9.3-bin.tar.gz  s3://bucket-from-noobaa2   --endpoint https://127.0.0.1:10443 --no-verify-ssl
+```
+
+```
+aws s3 ls   s3://bucket-from-noobaa2   --endpoint https://127.0.0.1:10443 --no-verify-ssl
+```
+
+```
+aws s3 rm   s3://bucket-from-noobaa2/alluxio-2.9.3-bin.tar.gz   --endpoint https://127.0.0.1:10443 --no-verify-ssl
+```
