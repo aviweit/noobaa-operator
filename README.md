@@ -154,49 +154,85 @@ INFO[0000] operator-image: noobaa/noobaa-operator:5.14.0
 
 # Additional comments
 
-Below are additional comments on customizing this fork and installing noobaa on a kubeadm cluster. Ensure to use a locally built operator
+Below are additional comments on customizing this fork and installing noobaa on a kubeadm cluster without a default provisioner
 
-## Provide proper access to DB PV
+## Locally build the operator
+
+### PVC customizations
+
+DB yaml files had been modified with a reduced size of PVC (10 GB)
+
+TODO: comment about pv-pool
+
+## Pre-requisites
+
+Do the below before every noobaa restart
+
+### Provide proper access to DB PV
 
 **Note:** this is a temporary workaround as we are using a PV that is mounted on a single node only
 
 Invoke the below on all worker nodes you have
 
 ```
+sudo rm -Rf  /mnt/data/*
+sudo mkdir -p /mnt/data
 sudo chmod uog+rwx /mnt
 sudo chmod uog+rwx /mnt/data
 ```
 
-## PVC customizations
-
-DB yaml files had been modified with a reduced size of PVC (10 GB)
-
-## Local storage class and PV
+### Local storage class and PV
 
 Run the below to create default storage class and PV for the PVCs to bound to
 
 `kubectl apply -f ./local-storage-class.yaml`
 
-**Note:** on every noobaa restart - you may need to re-apply (delete, apply) above yaml as well as running `sudo rm -Rf  /mnt/data/*` on every worker node
-
-## Private registry
-
-It is advised to use a private registry to avoid docker pull rate limit issues. Push operator image and db image and run install command in a similar manner as below:
-
-`build/_output/bin/noobaa-operator-local install --operator-image='10.31.3.13:5000/noobaa/noobaa-operator:5.14.0' --db-image='10.31.3.13:5000/centos/postgresql-12-centos7'`
-
 ## Install using noobaa-operator
+
+It is advised to use a private registry to avoid docker pull rate limit issues. Push operator and db images and run `install` with the below options (update registry ip according to your environment):
 
 ```
 build/_output/bin/noobaa-operator-local install --operator-image='10.31.3.13:5000/noobaa/noobaa-operator:5.14.0' --db-image='10.31.3.13:5000/centos/postgresql-12-centos7'
 ```
 
-## Add out MinIO backing store
+## Add MinIO backing store
 
-Replace access and secert keys with the ones obtained form MinIO
+Replace access and secret keys with the ones obtained form MinIO (update access-key, secret-key, endpoint according to your environment)
 
 ```
 build/_output/bin/noobaa-operator-local backingstore create s3-compatible minio-store --access-key='****'  --secret-key='****' --target-bucket='noobaa-bucket'  --endpoint='http://10.100.200.177:9000'
 ```
 
-**Note:** Bucket "noobaa-bucket" should exist already
+**Note:** ensure bucket "noobaa-bucket" already exists in minio, otherwise create it first
+
+## Manage your noobaa buckets
+
+### run port-forward
+
+to do so from the localhost (outside k8s cluster), open new terminal and run
+
+```
+kubectl port-forward service/s3  10443:443
+```
+
+### Configure aws s3 CLI
+
+print secrets
+
+```
+build/_output/bin/noobaa-operator-local status --show-secrets=true
+```
+
+locate `S3 Credentials` section and invoke the below base on these
+
+```
+export AWS_ACCESS_KEY_ID=***
+export AWS_SECRET_ACCESS_KEY=***
+aws s3 ls --endpoint https://127.0.0.1:10443 --no-verify-ssl
+```
+
+inoke your aws s3 commands e.g.,
+
+```
+aws s3 mb s3://bucket-from-noobaa   --endpoint https://127.0.0.1:10443 --no-verify-ssl
+```
