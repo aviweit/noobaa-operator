@@ -214,17 +214,7 @@ build/_output/bin/noobaa-operator-local backingstore create s3-compatible minio-
 
 ## Work with your noobaa buckets
 
-### run port-forward
-
-in-order to interact with `s3` noobaa endpoint from outside the cluster - we need to port forward
-
-open new terminal and run
-
-```
-kubectl port-forward service/s3  10443:443
-```
-
-### Configure aws s3 CLI
+### configure aws s3 CLI
 
 configure your aws s3 to use noobbaa s3 endpoint
 
@@ -240,6 +230,18 @@ then, set env variables with these secrets
 export AWS_ACCESS_KEY_ID=***
 export AWS_SECRET_ACCESS_KEY=***
 ```
+
+### run port-forward
+
+in-order to interact with `s3` noobaa endpoint from outside the cluster - we need to port forward
+
+open new terminal and run
+
+```
+kubectl port-forward service/s3  10443:443
+```
+
+### run aws s3 commands
 
 invoke your `aws s3` locally pointing it to localhost:port_forward e.g.,
 
@@ -258,17 +260,21 @@ aws s3 mb s3://bucket-from-noobaa --endpoint https://127.0.0.1:10443 --no-verify
 copy object
 
 ```
-aws s3 cp ~/alluxio-2.9.3-bin.tar.gz  s3://bucket-from-noobaa2 --endpoint https://127.0.0.1:10443 --no-verify-ssl
+aws s3 cp ~/alluxio-2.9.3-bin.tar.gz  s3://bucket-from-noobaa --endpoint https://127.0.0.1:10443 --no-verify-ssl
 ```
 
 list
 
 ```
-aws s3 ls s3://bucket-from-noobaa2 --endpoint https://127.0.0.1:10443 --no-verify-ssl
+aws s3 ls s3://bucket-from-noobaa --endpoint https://127.0.0.1:10443 --no-verify-ssl
 ```
 
 remove object
 
 ```
-aws s3 rm s3://bucket-from-noobaa2/alluxio-2.9.3-bin.tar.gz --endpoint https://127.0.0.1:10443 --no-verify-ssl
+aws s3 rm s3://bucket-from-noobaa/alluxio-2.9.3-bin.tar.gz --endpoint https://127.0.0.1:10443 --no-verify-ssl
 ```
+
+## Mount noobaa object on client
+
+Refer to this [link](doc/additional_comments.md#clients-to-interact-with-backing-store)
