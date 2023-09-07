@@ -186,8 +186,8 @@ sudo chmod uog+rwx /mnt/data
 Run the below to re-create default storage class and PV for the PVCs to bound to
 
 ```
-kubectl delete -f ./local-storage-class.yaml
-kubectl apply  -f ./local-storage-class.yaml
+kubectl delete -f deploy/local-storage-class.yaml
+kubectl apply  -f deploy/local-storage-class.yaml
 ```
 
 ## Install using noobaa-operator
