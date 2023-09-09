@@ -186,8 +186,8 @@ sudo chmod uog+rwx /mnt/data
 Run the below to re-create default storage class and PV for the PVCs to bound to
 
 ```
-kubectl delete -f ./local-storage-class.yaml
-kubectl apply  -f ./local-storage-class.yaml
+kubectl delete -f deploy/local-strorage-class-and-db-pv.yaml
+kubectl apply  -f deploy/local-strorage-class-and-db-pv.yaml
 ```
 
 ## Install using noobaa-operator
@@ -197,7 +197,7 @@ It is advised to use a private registry to avoid docker pull rate limit issues. 
 Note: update registry ip according to your environment
 
 ```
-build/_output/bin/noobaa-operator-local install --operator-image='10.31.3.13:5000/noobaa/noobaa-operator:5.14.0' --db-image='10.31.3.13:5000/centos/postgresql-12-centos7'
+build/_output/bin/noobaa-operator-local install --manual-default-backingstore=true --noobaa-image='10.31.3.13:5000/noobaa/noobaa-core:master-20230725'  --operator-image='10.31.3.13:5000/noobaa/noobaa-operator:5.14.0' --noobaa-db-image='10.31.3.13:5000/centos/postgresql-12-centos7'
 ```
 
 ## Add MinIO backing store
