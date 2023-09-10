@@ -186,8 +186,8 @@ sudo chmod uog+rwx /mnt/data
 Run the below to re-create default storage class and PV for the PVCs to bound to
 
 ```
-kubectl delete -f deploy/local-strorage-class-and-db-pv.yaml
-kubectl apply  -f deploy/local-strorage-class-and-db-pv.yaml
+kubectl delete -f deploy/local-storage-class-and-db-pv.yaml
+kubectl apply  -f deploy/local-storage-class-and-db-pv.yaml
 ```
 
 ## Install using noobaa-operator
@@ -197,12 +197,17 @@ It is advised to use a private registry to avoid docker pull rate limit issues. 
 Note: update registry ip according to your environment
 
 ```
+kubectl create ns noobaa
+kubectl config set-context --current --namespace noobaa
+```
+
+```
 build/_output/bin/noobaa-operator-local install --manual-default-backingstore=true --noobaa-image='10.31.3.13:5000/noobaa/noobaa-core:master-20230725'  --operator-image='10.31.3.13:5000/noobaa/noobaa-operator:5.14.0' --noobaa-db-image='10.31.3.13:5000/centos/postgresql-12-centos7'
 ```
 
-## Add MinIO backing store
+## Add MinIO backing stores
 
-Login to minio and create a bucket that will act as a "back store" e.g. "noobaa-bucket"
+Login to your minio instances and create a bucket in each, that will act as a "back store" e.g. "noobaa-bucket", "noobaa-bucket2"
 
 then, run the below command
 
@@ -210,6 +215,10 @@ Note: replace access and secret keys with the ones obtained form MinIO and updat
 
 ```
 build/_output/bin/noobaa-operator-local backingstore create s3-compatible minio-store --access-key='****'  --secret-key='****' --target-bucket='noobaa-bucket'  --endpoint='http://10.100.200.177:9000'
+```
+
+```
+build/_output/bin/noobaa-operator-local backingstore create s3-compatible minio-store2 --access-key='****'  --secret-key='****' --target-bucket='noobaa-bucket2'  --endpoint='http://10.100.200.177:9100'
 ```
 
 ## Work with your noobaa buckets
